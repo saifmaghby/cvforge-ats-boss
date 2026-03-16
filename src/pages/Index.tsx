@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import LiveCVPreview from "@/components/LiveCVPreview";
 import ATSScoreGauge from "@/components/ATSScoreGauge";
 import ForgeButton from "@/components/ForgeButton";

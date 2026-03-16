@@ -104,7 +104,7 @@ const Features = () => (
           <motion.div
             key={f.title}
             {...entrance}
-            transition={{ ...entrance.transition, delay: i * 0.05 }}
+            transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] as [number, number, number, number], delay: i * 0.05 }}
             className="border border-border p-8 hover:bg-secondary transition-colors duration-150 group"
           >
             <f.icon className="w-5 h-5 text-primary mb-6" strokeWidth={1.5} />

@@ -1,1 +1,4 @@
 project_id = "szumrwytxowrgvoopplo"
+
+[functions.ats-checker]
+verify_jwt = false

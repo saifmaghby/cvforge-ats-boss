@@ -7,7 +7,7 @@ import { Shield, Zap, Target, Check, ArrowRight } from "lucide-react";
 const entrance = {
   initial: { opacity: 0, y: 10 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.4, ease: [0.19, 1, 0.22, 1] },
+  transition: { duration: 0.4, ease: [0.19, 1, 0.22, 1] as [number, number, number, number] },
 };
 
 const Hero = () => (

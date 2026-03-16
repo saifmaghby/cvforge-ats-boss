@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import LiveCVPreview from "@/components/LiveCVPreview";
 import ATSScoreGauge from "@/components/ATSScoreGauge";
 import ForgeButton from "@/components/ForgeButton";
@@ -356,6 +357,8 @@ const Footer = () => (
 );
 
 const Index = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
@@ -370,10 +373,13 @@ const Index = () => {
             <span className="hover:text-foreground transition-colors cursor-pointer">ATS Checker</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors cursor-pointer hidden md:block">
+            <span
+              onClick={() => navigate("/auth")}
+              className="text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors cursor-pointer hidden md:block"
+            >
               Sign In
             </span>
-            <ForgeButton>Get Started</ForgeButton>
+            <ForgeButton onClick={() => navigate("/auth")}>Get Started</ForgeButton>
           </div>
         </div>
       </nav>

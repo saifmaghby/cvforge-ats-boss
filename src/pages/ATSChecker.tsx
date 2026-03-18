@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import ForgeButton from "@/components/ForgeButton";
 import ATSScoreGauge from "@/components/ATSScoreGauge";
-import { useAuth } from "@/contexts/AuthContext";
+import DashboardLayout from "@/components/DashboardLayout";
 import { toast } from "sonner";
-import { Shield, AlertTriangle, Check, X, ArrowRight, Zap } from "lucide-react";
+import { AlertTriangle, Check, X, Zap } from "lucide-react";
 
 interface ATSResult {
   overallScore: number;
@@ -18,8 +17,6 @@ interface ATSResult {
 }
 
 const ATSChecker = () => {
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
   const [cvText, setCvText] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,27 +27,17 @@ const ATSChecker = () => {
       toast.error("Paste both your CV text and the job description.");
       return;
     }
-
     setLoading(true);
     setResult(null);
-
     try {
       const { data, error } = await supabase.functions.invoke("ats-checker", {
         body: { cvText, jobDescription },
       });
-
-      if (error) {
-        // Handle specific HTTP status errors from the edge function
-        const message = typeof error === "object" && "message" in error ? error.message : String(error);
-        toast.error(message || "Analysis failed");
-        return;
-      }
-
+      if (error) throw error;
       if (data?.error) {
         toast.error(data.error);
         return;
       }
-
       setResult(data as ATSResult);
     } catch (e: any) {
       toast.error(e.message || "Something went wrong");
@@ -60,36 +47,14 @@ const ATSChecker = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Nav */}
-      <nav className="border-b border-border sticky top-0 bg-background z-50">
-        <div className="px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <a href="/dashboard" className="font-display text-lg font-bold uppercase tracking-tight">
-              CV<span className="text-primary">Forge</span>
-            </a>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground hidden sm:inline">
-              ATS Checker
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-mono text-muted-foreground hidden md:inline">
-              {user?.email}
-            </span>
-            <ForgeButton variant="outline" onClick={() => { signOut(); navigate("/"); }}>
-              Sign Out
-            </ForgeButton>
-          </div>
-        </div>
-      </nav>
-
-      <div className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+    <DashboardLayout>
+      <div className="flex-1 p-6 lg:p-10 max-w-6xl">
         {/* Header */}
         <div className="mb-8">
-          <p className="text-xs font-mono uppercase tracking-[0.2em] text-primary mb-2">
+          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-2">
             Parser Simulation
           </p>
-          <h1 className="font-display text-4xl font-bold uppercase tracking-tighter">
+          <h1 className="font-display text-3xl lg:text-4xl font-bold uppercase tracking-tighter">
             ATS Score Checker
           </h1>
           <p className="text-sm font-mono text-muted-foreground mt-2 max-w-lg">
@@ -110,7 +75,7 @@ const ATSChecker = () => {
               placeholder="Paste your CV content here (plain text)..."
             />
           </div>
-          <div className="border border-border border-l-0 lg:border-l p-6">
+          <div className="border border-border border-t-0 lg:border-t lg:border-l-0 p-6">
             <label className="block text-[10px] font-mono uppercase tracking-widest text-primary mb-3">
               Job Description
             </label>
@@ -146,7 +111,6 @@ const ATSChecker = () => {
         {/* Results */}
         {result && (
           <div className="space-y-0">
-            {/* Score row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-border">
               <div className="p-8 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-border">
                 <ATSScoreGauge score={result.overallScore} />
@@ -173,7 +137,6 @@ const ATSChecker = () => {
               </div>
             </div>
 
-            {/* Matched Keywords */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
               <div className="border border-border border-t-0 p-6">
                 <div className="flex items-center gap-2 mb-4">
@@ -184,10 +147,7 @@ const ATSChecker = () => {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {result.matchedKeywords.map((kw) => (
-                    <span
-                      key={kw}
-                      className="border border-primary/30 bg-primary/5 text-primary px-2 py-1 text-xs font-mono"
-                    >
+                    <span key={kw} className="border border-primary/30 bg-primary/5 text-primary px-2 py-1 text-xs font-mono">
                       {kw}
                     </span>
                   ))}
@@ -205,10 +165,7 @@ const ATSChecker = () => {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {result.missingKeywords.map((kw) => (
-                    <span
-                      key={kw}
-                      className="border border-destructive/30 bg-destructive/5 text-destructive px-2 py-1 text-xs font-mono"
-                    >
+                    <span key={kw} className="border border-destructive/30 bg-destructive/5 text-destructive px-2 py-1 text-xs font-mono">
                       {kw}
                     </span>
                   ))}
@@ -219,7 +176,6 @@ const ATSChecker = () => {
               </div>
             </div>
 
-            {/* Formatting Issues */}
             {result.formattingIssues.length > 0 && (
               <div className="border border-border border-t-0 p-6">
                 <div className="flex items-center gap-2 mb-4">
@@ -239,7 +195,6 @@ const ATSChecker = () => {
               </div>
             )}
 
-            {/* Suggestions */}
             <div className="border border-border border-t-0 p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Zap className="w-4 h-4 text-primary" />
@@ -259,7 +214,7 @@ const ATSChecker = () => {
           </div>
         )}
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 

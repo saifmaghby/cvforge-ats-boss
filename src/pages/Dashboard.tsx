@@ -18,7 +18,7 @@ const Dashboard = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
           {[
-            { title: "My CVs", desc: "Build and manage your ATS-optimized CVs", count: "0", url: "/builder" },
+            { title: "My CVs", desc: "Build and manage your ATS-optimized CVs", count: "0", url: "/my-cvs" },
             { title: "ATS Checker", desc: "Audit your CV against job descriptions", count: "—", url: "/ats-checker" },
             { title: "Job Tracker", desc: "Track applications and interview status", count: "—", url: "#" },
           ].map((card) => (

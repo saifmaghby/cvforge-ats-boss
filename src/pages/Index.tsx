@@ -11,7 +11,7 @@ const entrance = {
   transition: { duration: 0.4, ease: [0.19, 1, 0.22, 1] as [number, number, number, number] },
 };
 
-const Hero = () => (
+const Hero = ({ onNavigate }: { onNavigate: (path: string) => void }) => (
   <section className="relative border-b border-border">
     <div className="container mx-auto px-4 py-24 lg:py-32">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
@@ -32,8 +32,8 @@ const Hero = () => (
             ever sees them. CVForge reverse-engineers the algorithm.
           </p>
           <div className="flex gap-4 pt-4">
-            <ForgeButton size="lg">Check Your ATS Score — Free</ForgeButton>
-            <ForgeButton variant="outline" size="lg">
+            <ForgeButton size="lg" onClick={() => onNavigate("/ats-checker")}>Check Your ATS Score — Free</ForgeButton>
+            <ForgeButton variant="outline" size="lg" onClick={() => onNavigate("/builder")}>
               Start Building
             </ForgeButton>
           </div>
@@ -199,7 +199,7 @@ const plans = [
   },
 ];
 
-const Pricing = () => (
+const Pricing = ({ onNavigate }: { onNavigate: (path: string) => void }) => (
   <section className="border-b border-border">
     <div className="container mx-auto px-4 py-24">
       <div className="text-center mb-16">
@@ -252,6 +252,7 @@ const Pricing = () => (
             <ForgeButton
               variant={plan.highlighted ? "primary" : "outline"}
               className="w-full justify-center"
+              onClick={() => onNavigate("/auth")}
             >
               {plan.cta}
             </ForgeButton>
@@ -308,7 +309,7 @@ const Testimonials = () => (
   </section>
 );
 
-const Footer = () => (
+const Footer = ({ onNavigate }: { onNavigate: (path: string) => void }) => (
   <footer className="border-t border-border">
     <div className="container mx-auto px-4 py-16">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -326,9 +327,9 @@ const Footer = () => (
             Product
           </p>
           <ul className="space-y-2 text-sm font-mono text-muted-foreground">
-            <li className="hover:text-foreground transition-colors cursor-pointer">ATS Checker</li>
-            <li className="hover:text-foreground transition-colors cursor-pointer">CV Builder</li>
-            <li className="hover:text-foreground transition-colors cursor-pointer">JD Tailoring</li>
+            <li onClick={() => onNavigate("/ats-checker")} className="hover:text-foreground transition-colors cursor-pointer">ATS Checker</li>
+            <li onClick={() => onNavigate("/builder")} className="hover:text-foreground transition-colors cursor-pointer">CV Builder</li>
+            <li onClick={() => onNavigate("/builder")} className="hover:text-foreground transition-colors cursor-pointer">JD Tailoring</li>
             <li className="hover:text-foreground transition-colors cursor-pointer">Pricing</li>
           </ul>
         </div>
@@ -368,9 +369,9 @@ const Index = () => {
             CV<span className="text-primary">Forge</span>
           </h2>
           <div className="hidden md:flex items-center gap-8 text-xs font-mono uppercase tracking-widest text-muted-foreground">
-            <span className="hover:text-foreground transition-colors cursor-pointer">Features</span>
+            <span onClick={() => navigate("/ats-checker")} className="hover:text-foreground transition-colors cursor-pointer">ATS Checker</span>
+            <span onClick={() => navigate("/builder")} className="hover:text-foreground transition-colors cursor-pointer">CV Builder</span>
             <span className="hover:text-foreground transition-colors cursor-pointer">Pricing</span>
-            <span className="hover:text-foreground transition-colors cursor-pointer">ATS Checker</span>
           </div>
           <div className="flex items-center gap-3">
             <span
@@ -384,12 +385,12 @@ const Index = () => {
         </div>
       </nav>
 
-      <Hero />
+      <Hero onNavigate={navigate} />
       <Features />
       <HowItWorks />
-      <Pricing />
+      <Pricing onNavigate={navigate} />
       <Testimonials />
-      <Footer />
+      <Footer onNavigate={navigate} />
     </div>
   );
 };

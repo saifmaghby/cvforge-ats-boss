@@ -309,7 +309,7 @@ const Testimonials = () => (
   </section>
 );
 
-const Footer = () => (
+const Footer = ({ onNavigate }: { onNavigate: (path: string) => void }) => (
   <footer className="border-t border-border">
     <div className="container mx-auto px-4 py-16">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -327,9 +327,9 @@ const Footer = () => (
             Product
           </p>
           <ul className="space-y-2 text-sm font-mono text-muted-foreground">
-            <li className="hover:text-foreground transition-colors cursor-pointer">ATS Checker</li>
-            <li className="hover:text-foreground transition-colors cursor-pointer">CV Builder</li>
-            <li className="hover:text-foreground transition-colors cursor-pointer">JD Tailoring</li>
+            <li onClick={() => onNavigate("/ats-checker")} className="hover:text-foreground transition-colors cursor-pointer">ATS Checker</li>
+            <li onClick={() => onNavigate("/builder")} className="hover:text-foreground transition-colors cursor-pointer">CV Builder</li>
+            <li onClick={() => onNavigate("/builder")} className="hover:text-foreground transition-colors cursor-pointer">JD Tailoring</li>
             <li className="hover:text-foreground transition-colors cursor-pointer">Pricing</li>
           </ul>
         </div>

@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import CVFormPanel from "@/components/CVFormPanel";
 import CVPreviewPanel from "@/components/CVPreviewPanel";
 import ForgeButton from "@/components/ForgeButton";
+import TailorCVDialog from "@/components/TailorCVDialog";
 import { CVData, sampleCVData, emptyCVData } from "@/types/cv";
 
 const CVBuilder = () => {

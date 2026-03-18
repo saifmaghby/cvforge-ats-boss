@@ -33,6 +33,7 @@ const navItems = [
   { title: "ATS Checker", url: "/ats-checker", icon: ScanSearch },
   { title: "Job Tracker", url: "/job-tracker", icon: Target },
   { title: "Cover Letter", url: "/cover-letter", icon: Mail },
+  { title: "Portfolios", url: "/portfolios", icon: Layers },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 

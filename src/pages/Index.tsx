@@ -11,7 +11,7 @@ const entrance = {
   transition: { duration: 0.4, ease: [0.19, 1, 0.22, 1] as [number, number, number, number] },
 };
 
-const Hero = () => (
+const Hero = ({ onNavigate }: { onNavigate: (path: string) => void }) => (
   <section className="relative border-b border-border">
     <div className="container mx-auto px-4 py-24 lg:py-32">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
@@ -32,8 +32,8 @@ const Hero = () => (
             ever sees them. CVForge reverse-engineers the algorithm.
           </p>
           <div className="flex gap-4 pt-4">
-            <ForgeButton size="lg" onClick={() => navigate("/ats-checker")}>Check Your ATS Score — Free</ForgeButton>
-            <ForgeButton variant="outline" size="lg" onClick={() => navigate("/builder")}>
+            <ForgeButton size="lg" onClick={() => onNavigate("/ats-checker")}>Check Your ATS Score — Free</ForgeButton>
+            <ForgeButton variant="outline" size="lg" onClick={() => onNavigate("/builder")}>
               Start Building
             </ForgeButton>
           </div>

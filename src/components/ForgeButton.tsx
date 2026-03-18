@@ -31,8 +31,9 @@ const ForgeButton = ({
 
   return (
     <button
-      className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}
+      className={`${base} ${sizes[size]} ${variants[variant]} ${className} ${disabled ? "opacity-50 pointer-events-none" : ""}`}
       onClick={onClick}
+      disabled={disabled}
     >
       {variant !== "ghost" && (
         <div className="absolute inset-0 bg-primary translate-y-[101%] group-hover:translate-y-0 transition-transform duration-200 ease-out" />

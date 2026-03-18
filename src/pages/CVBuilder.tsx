@@ -38,6 +38,7 @@ const CVBuilder = () => {
             >
               Load Sample
             </ForgeButton>
+            <TailorCVDialog data={cvData} onChange={setCvData} />
             <ForgeButton variant="primary">
               Export PDF
             </ForgeButton>

@@ -15,7 +15,7 @@ const ForgeButton = ({
   size = "default",
   className = "",
   onClick,
-}: ForgeButtonProps) => {
+}: ForgeButtonProps & { disabled?: boolean }) => {
   const base = "relative group overflow-hidden font-display font-bold uppercase tracking-widest transition-colors duration-200";
   
   const sizes = {

@@ -369,9 +369,9 @@ const Index = () => {
             CV<span className="text-primary">Forge</span>
           </h2>
           <div className="hidden md:flex items-center gap-8 text-xs font-mono uppercase tracking-widest text-muted-foreground">
-            <span className="hover:text-foreground transition-colors cursor-pointer">Features</span>
+            <span onClick={() => navigate("/ats-checker")} className="hover:text-foreground transition-colors cursor-pointer">ATS Checker</span>
+            <span onClick={() => navigate("/builder")} className="hover:text-foreground transition-colors cursor-pointer">CV Builder</span>
             <span className="hover:text-foreground transition-colors cursor-pointer">Pricing</span>
-            <span className="hover:text-foreground transition-colors cursor-pointer">ATS Checker</span>
           </div>
           <div className="flex items-center gap-3">
             <span
@@ -385,12 +385,12 @@ const Index = () => {
         </div>
       </nav>
 
-      <Hero />
+      <Hero onNavigate={navigate} />
       <Features />
       <HowItWorks />
-      <Pricing />
+      <Pricing onNavigate={navigate} />
       <Testimonials />
-      <Footer />
+      <Footer onNavigate={navigate} />
     </div>
   );
 };

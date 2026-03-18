@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard.tsx";
 import CVBuilder from "./pages/CVBuilder.tsx";
 import ATSChecker from "./pages/ATSChecker.tsx";
 import Settings from "./pages/Settings.tsx";
+import JobTracker from "./pages/JobTracker.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <ATSChecker />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/job-tracker"
+              element={
+                <ProtectedRoute>
+                  <JobTracker />
                 </ProtectedRoute>
               }
             />

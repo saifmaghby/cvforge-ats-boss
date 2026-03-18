@@ -1,4 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import CVFormPanel from "@/components/CVFormPanel";
 import CVPreviewPanel from "@/components/CVPreviewPanel";
 import ForgeButton from "@/components/ForgeButton";
@@ -7,12 +10,70 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { CVData, sampleCVData, emptyCVData } from "@/types/cv";
 import { CVTemplateId, cvTemplates } from "@/components/cv-templates";
 import { toast } from "sonner";
+import { Save } from "lucide-react";
 
 const CVBuilder = () => {
-  const [cvData, setCvData] = useState<CVData>(sampleCVData);
+  const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const cvId = searchParams.get("cv");
+
+  const [cvData, setCvData] = useState<CVData>(emptyCVData);
   const [template, setTemplate] = useState<CVTemplateId>("classic");
   const [exporting, setExporting] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [cvName, setCvName] = useState("Untitled CV");
+  const [loaded, setLoaded] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
+
+  // Load CV from cloud if cvId is present
+  useEffect(() => {
+    if (!cvId || !user) {
+      if (!cvId) setCvData(sampleCVData);
+      setLoaded(true);
+      return;
+    }
+    const load = async () => {
+      const { data, error } = await supabase
+        .from("saved_cvs")
+        .select("*")
+        .eq("id", cvId)
+        .single();
+      if (error || !data) {
+        toast.error("Could not load CV");
+        setCvData(sampleCVData);
+      } else {
+        setCvData(data.cv_data as unknown as CVData);
+        setTemplate((data.template || "classic") as CVTemplateId);
+        setCvName(data.name);
+      }
+      setLoaded(true);
+    };
+    load();
+  }, [cvId, user]);
+
+  const handleSave = useCallback(async () => {
+    if (!user) return;
+    setSaving(true);
+    try {
+      if (cvId) {
+        const { error } = await supabase
+          .from("saved_cvs")
+          .update({ cv_data: cvData as unknown as Record<string, unknown>, template, name: cvName })
+          .eq("id", cvId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("saved_cvs")
+          .insert({ user_id: user.id, cv_data: cvData as unknown as Record<string, unknown>, template, name: cvName });
+        if (error) throw error;
+      }
+      toast.success("CV saved");
+    } catch {
+      toast.error("Failed to save CV");
+    } finally {
+      setSaving(false);
+    }
+  }, [user, cvId, cvData, template, cvName]);
 
   const handleExportPDF = async () => {
     if (!previewRef.current) return;
@@ -40,13 +101,31 @@ const CVBuilder = () => {
     }
   };
 
+  if (!loaded) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-screen text-muted-foreground font-mono text-sm">
+          Loading…
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
       {/* Builder toolbar */}
       <div className="border-b border-border px-4 h-12 flex items-center justify-between bg-background">
-        <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-          Builder
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+            Builder
+          </span>
+          <input
+            value={cvName}
+            onChange={(e) => setCvName(e.target.value)}
+            className="bg-transparent border-b border-transparent hover:border-border focus:border-primary text-sm font-mono outline-none px-1 py-0.5 max-w-[200px] text-foreground"
+            placeholder="CV Name"
+          />
+        </div>
         <div className="flex items-center gap-3">
           <ForgeButton variant="ghost" onClick={() => setCvData(emptyCVData)}>
             Clear
@@ -55,6 +134,10 @@ const CVBuilder = () => {
             Load Sample
           </ForgeButton>
           <TailorCVDialog data={cvData} onChange={setCvData} />
+          <ForgeButton variant="ghost" onClick={handleSave} disabled={saving}>
+            <Save className="h-4 w-4 mr-1" />
+            {saving ? "Saving…" : "Save"}
+          </ForgeButton>
           <ForgeButton variant="primary" onClick={handleExportPDF} disabled={exporting}>
             {exporting ? "Exporting…" : "Export PDF"}
           </ForgeButton>

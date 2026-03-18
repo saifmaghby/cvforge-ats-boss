@@ -86,6 +86,22 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/portfolios"
+              element={
+                <ProtectedRoute>
+                  <MyPortfolios />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portfolio/builder"
+              element={
+                <ProtectedRoute>
+                  <PortfolioBuilder />
+                </ProtectedRoute>
+              }
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

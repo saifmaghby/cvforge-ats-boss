@@ -252,6 +252,7 @@ const Pricing = () => (
             <ForgeButton
               variant={plan.highlighted ? "primary" : "outline"}
               className="w-full justify-center"
+              onClick={() => onNavigate("/auth")}
             >
               {plan.cta}
             </ForgeButton>

@@ -37,6 +37,14 @@ const App = () => (
               }
             />
             <Route
+              path="/my-cvs"
+              element={
+                <ProtectedRoute>
+                  <MyCVs />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/builder"
               element={
                 <ProtectedRoute>

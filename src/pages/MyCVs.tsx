@@ -25,7 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Plus, Pencil, Trash2, ExternalLink, Check, X } from "lucide-react";
+import { Plus, Pencil, Trash2, ExternalLink, Check, X, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 

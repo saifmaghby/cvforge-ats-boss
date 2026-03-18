@@ -8,6 +8,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import MyCVs from "./pages/MyCVs.tsx";
 import CVBuilder from "./pages/CVBuilder.tsx";
 import ATSChecker from "./pages/ATSChecker.tsx";
 import Settings from "./pages/Settings.tsx";
@@ -32,6 +33,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/my-cvs"
+              element={
+                <ProtectedRoute>
+                  <MyCVs />
                 </ProtectedRoute>
               }
             />

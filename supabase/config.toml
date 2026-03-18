@@ -2,3 +2,6 @@ project_id = "szumrwytxowrgvoopplo"
 
 [functions.ats-checker]
 verify_jwt = false
+
+[functions.tailor-cv]
+verify_jwt = false

@@ -25,7 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Plus, Pencil, Trash2, ExternalLink, Check, X } from "lucide-react";
+import { Plus, Pencil, Trash2, ExternalLink, Check, X, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -89,6 +89,20 @@ const MyCVs = () => {
       toast.success("CV renamed");
     },
     onError: () => toast.error("Failed to rename"),
+  });
+
+  const duplicateMutation = useMutation({
+    mutationFn: async (cv: SavedCV) => {
+      const { error } = await supabase
+        .from("saved_cvs")
+        .insert([{ user_id: user!.id, name: `${cv.name} (Copy)`, template: cv.template, cv_data: JSON.parse(JSON.stringify(cv.cv_data)) }]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["saved-cvs"] });
+      toast.success("CV duplicated");
+    },
+    onError: () => toast.error("Failed to duplicate"),
   });
 
   const deleteMutation = useMutation({
@@ -224,6 +238,13 @@ const MyCVs = () => {
                           title="Rename"
                         >
                           <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => duplicateMutation.mutate(cv)}
+                          className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                          title="Duplicate"
+                        >
+                          <Copy className="h-4 w-4" />
                         </button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>

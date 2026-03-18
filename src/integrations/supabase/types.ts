@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      job_applications: {
+        Row: {
+          applied_date: string | null
+          company: string
+          created_at: string
+          deadline: string | null
+          id: string
+          location: string | null
+          notes: string | null
+          role: string
+          salary_range: string | null
+          stage: Database["public"]["Enums"]["application_stage"]
+          updated_at: string
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          applied_date?: string | null
+          company: string
+          created_at?: string
+          deadline?: string | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          role: string
+          salary_range?: string | null
+          stage?: Database["public"]["Enums"]["application_stage"]
+          updated_at?: string
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          applied_date?: string | null
+          company?: string
+          created_at?: string
+          deadline?: string | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          role?: string
+          salary_range?: string | null
+          stage?: Database["public"]["Enums"]["application_stage"]
+          updated_at?: string
+          url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -52,7 +100,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      application_stage:
+        | "saved"
+        | "applied"
+        | "screening"
+        | "interview"
+        | "technical"
+        | "offer"
+        | "rejected"
+        | "accepted"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -179,6 +235,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      application_stage: [
+        "saved",
+        "applied",
+        "screening",
+        "interview",
+        "technical",
+        "offer",
+        "rejected",
+        "accepted",
+      ],
+    },
   },
 } as const

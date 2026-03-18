@@ -193,14 +193,13 @@ const PortfolioBuilder = () => {
 // Build presentation slides from portfolio data
 function buildSlides(data: PortfolioData) {
   const slides: { type: string; content: any }[] = [];
-  slides.push({ type: "hero", content: data.hero });
+  slides.push({ type: "hero", content: data.hero || {} });
   if (data.about) slides.push({ type: "about", content: data.about });
-  if (data.projects.length > 0) {
-    // one slide per project
+  if (data.projects?.length > 0) {
     data.projects.forEach((p) => slides.push({ type: "project", content: p }));
   }
-  if (data.skills.length > 0) slides.push({ type: "skills", content: data.skills });
-  if (data.contact.email || data.contact.linkedin || data.contact.github) {
+  if (data.skills?.length > 0) slides.push({ type: "skills", content: data.skills });
+  if (data.contact?.email || data.contact?.linkedin || data.contact?.github) {
     slides.push({ type: "contact", content: data.contact });
   }
   return slides;

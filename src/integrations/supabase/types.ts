@@ -62,6 +62,42 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolios: {
+        Row: {
+          created_at: string
+          id: string
+          is_published: boolean
+          name: string
+          portfolio_data: Json
+          slug: string
+          template: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          name?: string
+          portfolio_data?: Json
+          slug: string
+          template?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          name?: string
+          portfolio_data?: Json
+          slug?: string
+          template?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

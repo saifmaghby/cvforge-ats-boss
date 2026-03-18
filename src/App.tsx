@@ -14,6 +14,8 @@ import ATSChecker from "./pages/ATSChecker.tsx";
 import Settings from "./pages/Settings.tsx";
 import JobTracker from "./pages/JobTracker.tsx";
 import CoverLetterGenerator from "./pages/CoverLetterGenerator.tsx";
+import MyPortfolios from "./pages/MyPortfolios.tsx";
+import PortfolioBuilder from "./pages/PortfolioBuilder.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -81,6 +83,22 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portfolios"
+              element={
+                <ProtectedRoute>
+                  <MyPortfolios />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portfolio/builder"
+              element={
+                <ProtectedRoute>
+                  <PortfolioBuilder />
                 </ProtectedRoute>
               }
             />

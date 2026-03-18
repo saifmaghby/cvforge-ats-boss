@@ -1,4 +1,5 @@
 import {
+  FolderOpen,
   FileText,
   ScanSearch,
   PenTool,

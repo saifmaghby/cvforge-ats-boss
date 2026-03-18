@@ -95,7 +95,7 @@ const MyCVs = () => {
     mutationFn: async (cv: SavedCV) => {
       const { error } = await supabase
         .from("saved_cvs")
-        .insert([{ user_id: user!.id, name: `${cv.name} (Copy)`, template: cv.template, cv_data: cv.cv_data }]);
+        .insert([{ user_id: user!.id, name: `${cv.name} (Copy)`, template: cv.template, cv_data: JSON.parse(JSON.stringify(cv.cv_data)) }]);
       if (error) throw error;
     },
     onSuccess: () => {

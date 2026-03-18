@@ -11,11 +11,11 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
 
   try {
-    const { cvText, jobDescription } = await req.json();
+    const { cvBase64, cvText, jobDescription } = await req.json();
 
-    if (!cvText || !jobDescription) {
+    if ((!cvBase64 && !cvText) || !jobDescription) {
       return new Response(
-        JSON.stringify({ error: "Both cvText and jobDescription are required" }),
+        JSON.stringify({ error: "A CV (PDF or text) and job description are required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -25,7 +25,7 @@ serve(async (req) => {
 
     const systemPrompt = `You are an expert ATS (Applicant Tracking System) analyzer specializing in the Egyptian job market (Wuzzuf, Bayt, LinkedIn). 
 
-Analyze the CV text against the job description and return structured results using the provided tool.
+Analyze the CV against the job description and return structured results using the provided tool.
 
 Scoring criteria:
 - Keyword match: How many important JD keywords appear in the CV (40% weight)
@@ -34,6 +34,28 @@ Scoring criteria:
 - Formatting: ATS-friendly structure, no problematic elements (15% weight)
 
 Be specific and actionable in your feedback. Reference Egyptian market norms where relevant.`;
+
+    // Build user message content — supports both PDF (base64) and plain text
+    const userContent: any[] = [];
+
+    if (cvBase64) {
+      userContent.push({
+        type: "file",
+        file: {
+          filename: "cv.pdf",
+          file_data: `data:application/pdf;base64,${cvBase64}`,
+        },
+      });
+      userContent.push({
+        type: "text",
+        text: `Analyze this uploaded CV PDF against the following job description:\n\n## Job Description:\n${jobDescription}`,
+      });
+    } else {
+      userContent.push({
+        type: "text",
+        text: `## CV Text:\n${cvText}\n\n## Job Description:\n${jobDescription}`,
+      });
+    }
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
@@ -47,10 +69,7 @@ Be specific and actionable in your feedback. Reference Egyptian market norms whe
           model: "google/gemini-3-flash-preview",
           messages: [
             { role: "system", content: systemPrompt },
-            {
-              role: "user",
-              content: `## CV Text:\n${cvText}\n\n## Job Description:\n${jobDescription}`,
-            },
+            { role: "user", content: userContent },
           ],
           tools: [
             {

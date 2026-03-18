@@ -32,8 +32,8 @@ const Hero = () => (
             ever sees them. CVForge reverse-engineers the algorithm.
           </p>
           <div className="flex gap-4 pt-4">
-            <ForgeButton size="lg">Check Your ATS Score — Free</ForgeButton>
-            <ForgeButton variant="outline" size="lg">
+            <ForgeButton size="lg" onClick={() => navigate("/ats-checker")}>Check Your ATS Score — Free</ForgeButton>
+            <ForgeButton variant="outline" size="lg" onClick={() => navigate("/builder")}>
               Start Building
             </ForgeButton>
           </div>

@@ -27,6 +27,7 @@ const navItems = [
   { title: "My CVs", url: "/dashboard", icon: FileText },
   { title: "CV Builder", url: "/builder", icon: PenTool },
   { title: "ATS Checker", url: "/ats-checker", icon: ScanSearch },
+  { title: "Job Tracker", url: "/job-tracker", icon: Target },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 

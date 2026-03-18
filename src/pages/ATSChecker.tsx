@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import ForgeButton from "@/components/ForgeButton";
 import ATSScoreGauge from "@/components/ATSScoreGauge";
 import DashboardLayout from "@/components/DashboardLayout";
 import { toast } from "sonner";
-import { AlertTriangle, Check, X, Zap, FileText, Briefcase, ChevronRight, BarChart3, Shield } from "lucide-react";
+import { AlertTriangle, Check, X, Zap, Upload, Briefcase, ChevronRight, BarChart3, Shield, FileText, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ATSResult {
@@ -42,21 +42,52 @@ const SectionHeader = ({ icon: Icon, title, variant = "primary" }: { icon: React
 );
 
 const ATSChecker = () => {
-  const [cvText, setCvText] = useState("");
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ATSResult | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== "application/pdf") {
+      toast.error("Please upload a PDF file");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File must be under 10MB");
+      return;
+    }
+    setPdfFile(file);
+  };
+
+  const fileToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        resolve(result.split(",")[1]); // strip data:...;base64,
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
 
   const runAudit = async () => {
-    if (!cvText.trim() || !jobDescription.trim()) {
-      toast.error("Paste both your CV text and the job description.");
+    if (!pdfFile) {
+      toast.error("Please upload your CV as a PDF.");
+      return;
+    }
+    if (!jobDescription.trim()) {
+      toast.error("Please paste the job description.");
       return;
     }
     setLoading(true);
     setResult(null);
     try {
+      const cvBase64 = await fileToBase64(pdfFile);
       const { data, error } = await supabase.functions.invoke("ats-checker", {
-        body: { cvText, jobDescription },
+        body: { cvBase64, jobDescription },
       });
       if (error) throw error;
       if (data?.error) {
@@ -71,7 +102,6 @@ const ATSChecker = () => {
     }
   };
 
-  const cvWordCount = cvText.trim().split(/\s+/).filter(Boolean).length;
   const jdWordCount = jobDescription.trim().split(/\s+/).filter(Boolean).length;
 
   return (
@@ -92,7 +122,7 @@ const ATSChecker = () => {
               ATS Compatibility Audit
             </h1>
             <p className="text-sm font-mono text-muted-foreground max-w-xl leading-relaxed">
-              Simulates how ATS parsers on Wuzzuf, Bayt, LinkedIn, and multinational portals process your CV against a specific job description.
+              Upload your CV as a PDF and paste the job description. Our AI scans your document and scores it against ATS parsers used by Wuzzuf, Bayt, LinkedIn, and multinational portals.
             </p>
           </div>
         </div>
@@ -100,27 +130,70 @@ const ATSChecker = () => {
         <div className="px-6 lg:px-10 py-8 max-w-5xl">
           {/* Input section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 mb-6">
+            {/* PDF Upload */}
             <div className="border border-border p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <FileText className="h-3.5 w-3.5 text-primary" />
-                  <label className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary font-semibold">
-                    CV Content
-                  </label>
-                </div>
-                <span className="text-[10px] font-mono text-muted-foreground">
-                  {cvWordCount} words
-                </span>
+              <div className="flex items-center gap-2 mb-4">
+                <Upload className="h-3.5 w-3.5 text-primary" />
+                <label className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary font-semibold">
+                  Upload CV (PDF)
+                </label>
               </div>
-              <textarea
-                value={cvText}
-                onChange={(e) => setCvText(e.target.value)}
-                className="w-full h-56 bg-secondary/50 border border-border focus:border-primary outline-none p-4 text-sm font-mono text-foreground transition-colors resize-none placeholder:text-muted-foreground/30 leading-relaxed"
-                placeholder="Paste your full CV content here (plain text)..."
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,application/pdf"
+                onChange={handleFileChange}
+                className="hidden"
               />
+
+              {!pdfFile ? (
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full h-56 border-2 border-dashed border-border hover:border-primary/50 bg-secondary/30 hover:bg-secondary/50 transition-all flex flex-col items-center justify-center gap-4 group"
+                >
+                  <div className="p-4 border border-border bg-secondary group-hover:border-primary/30 transition-colors">
+                    <FileText className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-mono text-foreground/70 mb-1">
+                      Click to upload your CV
+                    </p>
+                    <p className="text-[10px] font-mono text-muted-foreground">
+                      PDF only · Max 10MB
+                    </p>
+                  </div>
+                </button>
+              ) : (
+                <div className="h-56 border border-border bg-secondary/30 flex flex-col items-center justify-center gap-4">
+                  <div className="p-4 border border-primary/30 bg-primary/5">
+                    <FileText className="h-8 w-8 text-primary" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-mono text-foreground font-medium truncate max-w-[250px]">
+                      {pdfFile.name}
+                    </p>
+                    <p className="text-[10px] font-mono text-muted-foreground mt-1">
+                      {(pdfFile.size / 1024).toFixed(0)} KB
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setPdfFile(null);
+                      if (fileInputRef.current) fileInputRef.current.value = "";
+                    }}
+                    className="flex items-center gap-1.5 text-[10px] font-mono text-muted-foreground hover:text-destructive transition-colors uppercase tracking-wider"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                    Remove
+                  </button>
+                </div>
+              )}
             </div>
+
+            {/* Job Description */}
             <div className="border border-border border-t-0 lg:border-t lg:border-l-0 p-6">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Briefcase className="h-3.5 w-3.5 text-primary" />
                   <label className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary font-semibold">
@@ -134,17 +207,17 @@ const ATSChecker = () => {
               <textarea
                 value={jobDescription}
                 onChange={(e) => setJobDescription(e.target.value)}
-                className="w-full h-56 bg-secondary/50 border border-border focus:border-primary outline-none p-4 text-sm font-mono text-foreground transition-colors resize-none placeholder:text-muted-foreground/30 leading-relaxed"
+                className="w-full h-56 bg-secondary/30 border border-border focus:border-primary outline-none p-4 text-sm font-mono text-foreground transition-colors resize-none placeholder:text-muted-foreground/30 leading-relaxed"
                 placeholder="Paste the target job description here..."
               />
             </div>
           </div>
 
-          <ForgeButton size="lg" onClick={runAudit} className="w-full sm:w-auto mb-10" disabled={loading}>
+          <ForgeButton size="lg" onClick={runAudit} className="w-full sm:w-auto mb-10" disabled={loading || !pdfFile}>
             {loading ? (
               <span className="flex items-center gap-2">
                 <span className="h-3 w-3 border border-primary-foreground border-t-transparent animate-spin" />
-                Analyzing…
+                Scanning PDF…
               </span>
             ) : (
               <span className="flex items-center gap-2">
@@ -169,7 +242,7 @@ const ATSChecker = () => {
                   </span>
                 </div>
                 <div className="space-y-2">
-                  {["Tokenizing CV content", "Extracting JD requirements", "Cross-referencing keywords", "Evaluating formatting"].map((step, i) => (
+                  {["Parsing PDF document", "Extracting CV content", "Cross-referencing JD keywords", "Evaluating ATS compatibility"].map((step, i) => (
                     <div key={step} className="flex items-center gap-3">
                       <div
                         className="h-1 w-1 bg-primary animate-pulse"

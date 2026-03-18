@@ -51,6 +51,14 @@ const App = () => (
               }
             />
             <Route
+              path="/job-tracker"
+              element={
+                <ProtectedRoute>
+                  <JobTracker />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/settings"
               element={
                 <ProtectedRoute>

@@ -42,7 +42,14 @@ const PortfolioBuilder = () => {
         .single();
       if (error) throw error;
       if (row) {
-        setData(row.portfolio_data as unknown as PortfolioData);
+        const loaded = row.portfolio_data as unknown as Partial<PortfolioData>;
+        setData({
+          hero: { ...emptyPortfolioData.hero, ...loaded?.hero },
+          about: loaded?.about || "",
+          projects: loaded?.projects || [],
+          skills: loaded?.skills || [],
+          contact: { ...emptyPortfolioData.contact, ...loaded?.contact },
+        });
         setTemplate((row.template || "developer") as PortfolioTemplate);
         setName(row.name);
         setIsPublished(row.is_published);

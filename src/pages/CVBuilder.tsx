@@ -58,13 +58,13 @@ const CVBuilder = () => {
       if (cvId) {
         const { error } = await supabase
           .from("saved_cvs")
-          .update({ cv_data: cvData as unknown as Record<string, unknown>, template, name: cvName })
+          .update({ cv_data: JSON.parse(JSON.stringify(cvData)), template, name: cvName })
           .eq("id", cvId);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from("saved_cvs")
-          .insert({ user_id: user.id, cv_data: cvData as unknown as Record<string, unknown>, template, name: cvName });
+          .insert([{ user_id: user.id, cv_data: JSON.parse(JSON.stringify(cvData)), template, name: cvName }]);
         if (error) throw error;
       }
       toast.success("CV saved");

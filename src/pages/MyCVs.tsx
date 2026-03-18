@@ -239,6 +239,13 @@ const MyCVs = () => {
                         >
                           <Pencil className="h-4 w-4" />
                         </button>
+                        <button
+                          onClick={() => duplicateMutation.mutate(cv)}
+                          className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                          title="Duplicate"
+                        >
+                          <Copy className="h-4 w-4" />
+                        </button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <button

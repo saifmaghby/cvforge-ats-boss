@@ -6,6 +6,7 @@ interface ForgeButtonProps {
   size?: "default" | "lg";
   className?: string;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const ForgeButton = ({

@@ -12,6 +12,7 @@ import CVBuilder from "./pages/CVBuilder.tsx";
 import ATSChecker from "./pages/ATSChecker.tsx";
 import Settings from "./pages/Settings.tsx";
 import JobTracker from "./pages/JobTracker.tsx";
+import CoverLetterGenerator from "./pages/CoverLetterGenerator.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <JobTracker />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/cover-letter"
+              element={
+                <ProtectedRoute>
+                  <CoverLetterGenerator />
                 </ProtectedRoute>
               }
             />

@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.tailor-cv]
 verify_jwt = false
+
+[functions.generate-cover-letter]
+verify_jwt = false

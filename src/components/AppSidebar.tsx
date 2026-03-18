@@ -5,6 +5,7 @@ import {
   Settings,
   LogOut,
   Target,
+  Mail,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -28,6 +29,7 @@ const navItems = [
   { title: "CV Builder", url: "/builder", icon: PenTool },
   { title: "ATS Checker", url: "/ats-checker", icon: ScanSearch },
   { title: "Job Tracker", url: "/job-tracker", icon: Target },
+  { title: "Cover Letter", url: "/cover-letter", icon: Mail },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 

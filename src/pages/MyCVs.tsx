@@ -91,6 +91,20 @@ const MyCVs = () => {
     onError: () => toast.error("Failed to rename"),
   });
 
+  const duplicateMutation = useMutation({
+    mutationFn: async (cv: SavedCV) => {
+      const { error } = await supabase
+        .from("saved_cvs")
+        .insert([{ user_id: user!.id, name: `${cv.name} (Copy)`, template: cv.template, cv_data: cv.cv_data }]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["saved-cvs"] });
+      toast.success("CV duplicated");
+    },
+    onError: () => toast.error("Failed to duplicate"),
+  });
+
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("saved_cvs").delete().eq("id", id);

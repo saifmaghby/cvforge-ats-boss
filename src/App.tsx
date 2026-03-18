@@ -60,6 +60,14 @@ const App = () => (
               }
             />
             <Route
+              path="/cover-letter"
+              element={
+                <ProtectedRoute>
+                  <CoverLetterGenerator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/settings"
               element={
                 <ProtectedRoute>

@@ -1,6 +1,7 @@
+import { forwardRef } from "react";
 import { CVData } from "@/types/cv";
 
-const CVPreviewPanel = ({ data }: { data: CVData }) => {
+const CVPreviewPanel = forwardRef<HTMLDivElement, { data: CVData }>(({ data }, ref) => {
   const { personal, summary, experience, education, skills } = data;
   const hasContent =
     personal.fullName || summary || experience.length || education.length || skills.length;
@@ -14,7 +15,7 @@ const CVPreviewPanel = ({ data }: { data: CVData }) => {
         </span>
       </div>
 
-      <div className="border border-border bg-white text-black origin-top" style={{ aspectRatio: "1/1.414" }}>
+      <div ref={ref} className="border border-border bg-white text-black origin-top" style={{ aspectRatio: "1/1.414" }}>
         <article className="p-6 font-mono text-[9px] leading-tight h-full overflow-hidden">
           {/* Header */}
           <div className="border-b-2 border-black pb-2 mb-2">
@@ -109,6 +110,8 @@ const CVPreviewPanel = ({ data }: { data: CVData }) => {
       </div>
     </div>
   );
-};
+});
+
+CVPreviewPanel.displayName = "CVPreviewPanel";
 
 export default CVPreviewPanel;

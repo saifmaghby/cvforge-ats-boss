@@ -97,7 +97,7 @@ const ArabicCVBuilder = () => {
             <Download className="w-3.5 h-3.5 ml-1" />
             {exporting ? "جارٍ التصدير..." : "تصدير PDF"}
           </ForgeButton>
-          <ForgeButton size="sm" onClick={handleSave} disabled={saving}>
+          <ForgeButton onClick={handleSave} disabled={saving}>
             <Save className="w-3.5 h-3.5 ml-1" />
             {saving ? "جارٍ الحفظ..." : "حفظ"}
           </ForgeButton>

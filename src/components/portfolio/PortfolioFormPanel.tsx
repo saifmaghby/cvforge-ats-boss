@@ -3,6 +3,7 @@ import { PortfolioData, PortfolioProject } from "@/types/portfolio";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import ForgeButton from "@/components/ForgeButton";
+import ImageUpload from "@/components/ImageUpload";
 import { Plus, Trash2, ChevronDown, ChevronRight } from "lucide-react";
 
 interface Props {

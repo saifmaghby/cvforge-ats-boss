@@ -17,6 +17,9 @@ import CoverLetterGenerator from "./pages/CoverLetterGenerator.tsx";
 import MyPortfolios from "./pages/MyPortfolios.tsx";
 import PortfolioBuilder from "./pages/PortfolioBuilder.tsx";
 import InterviewPrep from "./pages/InterviewPrep.tsx";
+import LinkedInOptimizer from "./pages/LinkedInOptimizer.tsx";
+import JobMatch from "./pages/JobMatch.tsx";
+import FollowUpEmail from "./pages/FollowUpEmail.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -108,6 +111,30 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <InterviewPrep />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/linkedin-optimizer"
+              element={
+                <ProtectedRoute>
+                  <LinkedInOptimizer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/job-match"
+              element={
+                <ProtectedRoute>
+                  <JobMatch />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/follow-up-email"
+              element={
+                <ProtectedRoute>
+                  <FollowUpEmail />
                 </ProtectedRoute>
               }
             />

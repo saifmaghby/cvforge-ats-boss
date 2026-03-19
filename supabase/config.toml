@@ -17,3 +17,12 @@ verify_jwt = false
 
 [functions.ats-audit]
 verify_jwt = false
+
+[functions.linkedin-optimizer]
+verify_jwt = false
+
+[functions.job-match]
+verify_jwt = false
+
+[functions.follow-up-email]
+verify_jwt = false

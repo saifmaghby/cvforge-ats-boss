@@ -49,6 +49,55 @@ export const emptyCVData: CVData = {
   skills: [],
 };
 
+const createId = (prefix: string, index: number) => {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+
+  return `${prefix}-${index}`;
+};
+
+export const normalizeCVData = (value: unknown): CVData => {
+  const raw = (value && typeof value === "object" ? value : {}) as Partial<CVData> & {
+    personal?: Partial<PersonalInfo>;
+    experience?: Partial<Experience>[];
+    education?: Partial<Education>[];
+  };
+
+  return {
+    personal: {
+      ...emptyCVData.personal,
+      ...(raw.personal && typeof raw.personal === "object" ? raw.personal : {}),
+    },
+    summary: typeof raw.summary === "string" ? raw.summary : emptyCVData.summary,
+    experience: Array.isArray(raw.experience)
+      ? raw.experience.map((item, index) => ({
+          id: typeof item?.id === "string" && item.id ? item.id : createId("experience", index),
+          company: typeof item?.company === "string" ? item.company : "",
+          role: typeof item?.role === "string" ? item.role : "",
+          startDate: typeof item?.startDate === "string" ? item.startDate : "",
+          endDate: typeof item?.endDate === "string" ? item.endDate : "",
+          current: Boolean(item?.current),
+          bullets: Array.isArray(item?.bullets)
+            ? item.bullets.filter((bullet): bullet is string => typeof bullet === "string")
+            : [""],
+        }))
+      : emptyCVData.experience,
+    education: Array.isArray(raw.education)
+      ? raw.education.map((item, index) => ({
+          id: typeof item?.id === "string" && item.id ? item.id : createId("education", index),
+          institution: typeof item?.institution === "string" ? item.institution : "",
+          degree: typeof item?.degree === "string" ? item.degree : "",
+          startDate: typeof item?.startDate === "string" ? item.startDate : "",
+          endDate: typeof item?.endDate === "string" ? item.endDate : "",
+        }))
+      : emptyCVData.education,
+    skills: Array.isArray(raw.skills)
+      ? raw.skills.filter((skill): skill is string => typeof skill === "string")
+      : emptyCVData.skills,
+  };
+};
+
 export const sampleCVData: CVData = {
   personal: {
     fullName: "Ahmed Hassan",

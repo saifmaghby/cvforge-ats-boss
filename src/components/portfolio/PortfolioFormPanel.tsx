@@ -136,6 +136,13 @@ const PortfolioFormPanel = ({ data, onChange }: Props) => {
                 <Trash2 className="h-3.5 w-3.5" />
               </button>
             </div>
+            <ImageUpload
+              value={project.imageUrl}
+              onChange={(url) => updateProject(project.id, "imageUrl", url)}
+              folder="portfolio-projects"
+              label="Project Screenshot"
+              aspect="video"
+            />
             <Input
               placeholder="Project Title"
               value={project.title}

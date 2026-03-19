@@ -1,5 +1,6 @@
 import { CVData, Experience, Education } from "@/types/cv";
 import { Plus, Trash2, GripVertical } from "lucide-react";
+import ImageUpload from "@/components/ImageUpload";
 
 interface Props {
   data: CVData;

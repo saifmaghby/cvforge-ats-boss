@@ -7,7 +7,7 @@ import CVPreviewPanel from "@/components/CVPreviewPanel";
 import ForgeButton from "@/components/ForgeButton";
 import TailorCVDialog from "@/components/TailorCVDialog";
 import DashboardLayout from "@/components/DashboardLayout";
-import { CVData, sampleCVData, emptyCVData } from "@/types/cv";
+import { CVData, sampleCVData, emptyCVData, normalizeCVData } from "@/types/cv";
 import { CVTemplateId, cvTemplates } from "@/components/cv-templates";
 import { toast } from "sonner";
 import { Save } from "lucide-react";
@@ -24,6 +24,10 @@ const CVBuilder = () => {
   const [cvName, setCvName] = useState("Untitled CV");
   const [loaded, setLoaded] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
+
+  const handleDataChange = useCallback((nextData: CVData) => {
+    setCvData(normalizeCVData(nextData));
+  }, []);
 
   // Load CV from cloud if cvId is present
   useEffect(() => {
@@ -42,15 +46,7 @@ const CVBuilder = () => {
         toast.error("Could not load CV");
         setCvData(sampleCVData);
       } else {
-        const raw = data.cv_data as Record<string, unknown> ?? {};
-        const merged: CVData = {
-          personal: { ...emptyCVData.personal, ...(raw.personal as Record<string, unknown> ?? {}) } as CVData["personal"],
-          summary: (raw.summary as string) ?? emptyCVData.summary,
-          experience: (raw.experience as CVData["experience"]) ?? emptyCVData.experience,
-          education: (raw.education as CVData["education"]) ?? emptyCVData.education,
-          skills: (raw.skills as CVData["skills"]) ?? emptyCVData.skills,
-        };
-        setCvData(merged);
+        setCvData(normalizeCVData(data.cv_data));
         setTemplate((data.template || "classic") as CVTemplateId);
         setCvName(data.name);
       }
@@ -63,18 +59,21 @@ const CVBuilder = () => {
     if (!user) return;
     setSaving(true);
     try {
+      const normalizedData = normalizeCVData(cvData);
+
       if (cvId) {
         const { error } = await supabase
           .from("saved_cvs")
-          .update({ cv_data: JSON.parse(JSON.stringify(cvData)), template, name: cvName })
+          .update({ cv_data: JSON.parse(JSON.stringify(normalizedData)), template, name: cvName })
           .eq("id", cvId);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from("saved_cvs")
-          .insert([{ user_id: user.id, cv_data: JSON.parse(JSON.stringify(cvData)), template, name: cvName }]);
+          .insert([{ user_id: user.id, cv_data: JSON.parse(JSON.stringify(normalizedData)), template, name: cvName }]);
         if (error) throw error;
       }
+      setCvData(normalizedData);
       toast.success("CV saved");
     } catch {
       toast.error("Failed to save CV");

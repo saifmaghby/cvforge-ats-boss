@@ -103,11 +103,12 @@ const PortfolioFormPanel = ({ data, onChange }: Props) => {
           className="font-mono text-sm resize-none"
           rows={2}
         />
-        <Input
-          placeholder="Avatar URL (optional)"
+        <ImageUpload
           value={data.hero.avatarUrl}
-          onChange={(e) => updateHero("avatarUrl", e.target.value)}
-          className="font-mono text-sm"
+          onChange={(url) => updateHero("avatarUrl", url)}
+          folder="portfolio-avatars"
+          label="Upload Avatar"
+          aspect="square"
         />
       </Section>
 

@@ -8,6 +8,7 @@ import {
   Target,
   Mail,
   Layers,
+  MessageSquare,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -33,6 +34,7 @@ const navItems = [
   { title: "ATS Checker", url: "/ats-checker", icon: ScanSearch },
   { title: "Job Tracker", url: "/job-tracker", icon: Target },
   { title: "Cover Letter", url: "/cover-letter", icon: Mail },
+  { title: "Interview Prep", url: "/interview-prep", icon: MessageSquare },
   { title: "Portfolios", url: "/portfolios", icon: Layers },
   { title: "Settings", url: "/settings", icon: Settings },
 ];

@@ -148,6 +148,14 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/arabic-cv"
+              element={
+                <ProtectedRoute>
+                  <ArabicCVBuilder />
+                </ProtectedRoute>
+              }
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

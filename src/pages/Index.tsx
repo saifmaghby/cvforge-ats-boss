@@ -442,6 +442,7 @@ const Index = () => {
 
       <Hero onNavigate={navigate} />
       <Features />
+      <RedesignCTA onNavigate={navigate} />
       <HowItWorks />
       <Pricing onNavigate={navigate} />
       <Testimonials />

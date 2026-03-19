@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.follow-up-email]
 verify_jwt = false
+
+[functions.job-search]
+verify_jwt = false

@@ -173,7 +173,7 @@ const CVBuilder = () => {
 
       {/* Split layout */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2" style={{ height: "calc(100vh - 9rem)" }}>
-        <CVFormPanel data={cvData} onChange={setCvData} />
+        <CVFormPanel data={cvData} onChange={handleDataChange} />
         <div className="hidden lg:block">
           <CVPreviewPanel ref={previewRef} data={cvData} template={template} />
         </div>

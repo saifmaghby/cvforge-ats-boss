@@ -28,6 +28,7 @@ import {
 import { Plus, Pencil, Trash2, ExternalLink, Check, X, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { emptyCVData } from "@/types/cv";
 
 interface SavedCV {
   id: string;
@@ -62,7 +63,7 @@ const MyCVs = () => {
     mutationFn: async () => {
       const { data, error } = await supabase
         .from("saved_cvs")
-        .insert({ user_id: user!.id, name: "Untitled CV", cv_data: {} })
+        .insert({ user_id: user!.id, name: "Untitled CV", cv_data: emptyCVData })
         .select()
         .single();
       if (error) throw error;

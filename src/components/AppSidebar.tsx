@@ -9,6 +9,9 @@ import {
   Mail,
   Layers,
   MessageSquare,
+  Linkedin,
+  Crosshair,
+  Send,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";

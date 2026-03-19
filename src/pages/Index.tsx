@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import LiveCVPreview from "@/components/LiveCVPreview";
 import ATSScoreGauge from "@/components/ATSScoreGauge";
 import ForgeButton from "@/components/ForgeButton";
-import { Shield, Zap, Target, Check, ArrowRight } from "lucide-react";
+import { Shield, Zap, Target, Check, ArrowRight, Sparkles } from "lucide-react";
 
 const entrance = {
   initial: { opacity: 0, y: 10 },
@@ -120,6 +120,61 @@ const Features = () => (
             </p>
           </motion.div>
         ))}
+      </div>
+    </div>
+  </section>
+);
+
+const RedesignCTA = ({ onNavigate }: { onNavigate: (path: string) => void }) => (
+  <section className="border-b border-border bg-secondary/50">
+    <div className="container mx-auto px-4 py-24">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <motion.div {...entrance} className="space-y-6">
+          <p className="text-xs font-mono uppercase tracking-[0.2em] text-primary">
+            Already have a CV?
+          </p>
+          <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tighter uppercase leading-[0.95]">
+            We Redesign
+            <br />
+            Your CV For
+            <br />
+            <span className="text-primary">Maximum ATS Score.</span>
+          </h2>
+          <p className="text-sm font-mono text-muted-foreground leading-relaxed max-w-md">
+            Upload your old CV from any source — Word, Canva, whatever. Our AI extracts your data, restructures it into an ATS-optimized format, and lets you pick from professional templates. Zero effort.
+          </p>
+          <div className="flex gap-4 pt-2">
+            <ForgeButton size="lg" onClick={() => onNavigate("/my-cvs")}>
+              <Sparkles className="h-4 w-4 mr-2" />
+              Redesign My CV
+            </ForgeButton>
+          </div>
+        </motion.div>
+        <motion.div {...entrance} className="border border-border p-8 space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 border border-primary/30 flex items-center justify-center text-primary font-display font-bold">01</div>
+            <div>
+              <p className="font-display font-bold uppercase text-sm">Upload Your Old CV</p>
+              <p className="text-xs font-mono text-muted-foreground">PDF from any source — Canva, Word, LinkedIn</p>
+            </div>
+          </div>
+          <div className="border-l-2 border-primary/20 ml-5 h-4" />
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 border border-primary/30 flex items-center justify-center text-primary font-display font-bold">02</div>
+            <div>
+              <p className="font-display font-bold uppercase text-sm">AI Extracts Your Data</p>
+              <p className="text-xs font-mono text-muted-foreground">Experience, skills, education — everything parsed</p>
+            </div>
+          </div>
+          <div className="border-l-2 border-primary/20 ml-5 h-4" />
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 border border-primary/30 flex items-center justify-center text-primary font-display font-bold">03</div>
+            <div>
+              <p className="font-display font-bold uppercase text-sm">Pick a Template & Export</p>
+              <p className="text-xs font-mono text-muted-foreground">ATS-optimized, ready for Wuzzuf, Bayt & LinkedIn</p>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   </section>
@@ -387,6 +442,7 @@ const Index = () => {
 
       <Hero onNavigate={navigate} />
       <Features />
+      <RedesignCTA onNavigate={navigate} />
       <HowItWorks />
       <Pricing onNavigate={navigate} />
       <Testimonials />

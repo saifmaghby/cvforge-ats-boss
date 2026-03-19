@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.interview-prep]
 verify_jwt = false
+
+[functions.extract-cv]
+verify_jwt = false

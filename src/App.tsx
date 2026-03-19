@@ -22,6 +22,7 @@ import JobMatch from "./pages/JobMatch.tsx";
 import FollowUpEmail from "./pages/FollowUpEmail.tsx";
 import JobSearch from "./pages/JobSearch.tsx";
 import ArabicCVBuilder from "./pages/ArabicCVBuilder.tsx";
+import MockInterview from "./pages/MockInterview.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -153,6 +154,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <ArabicCVBuilder />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/mock-interview"
+              element={
+                <ProtectedRoute>
+                  <MockInterview />
                 </ProtectedRoute>
               }
             />

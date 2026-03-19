@@ -14,6 +14,7 @@ import {
   Send,
   Search,
   Languages,
+  Mic,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -45,6 +46,7 @@ const navItems = [
   { title: "Follow-Up Email", url: "/follow-up-email", icon: Send },
   { title: "LinkedIn", url: "/linkedin-optimizer", icon: Linkedin },
   { title: "Interview Prep", url: "/interview-prep", icon: MessageSquare },
+  { title: "Mock Interview", url: "/mock-interview", icon: Mic },
   { title: "Portfolios", url: "/portfolios", icon: Layers },
   { title: "Settings", url: "/settings", icon: Settings },
 ];

@@ -16,6 +16,7 @@ import JobTracker from "./pages/JobTracker.tsx";
 import CoverLetterGenerator from "./pages/CoverLetterGenerator.tsx";
 import MyPortfolios from "./pages/MyPortfolios.tsx";
 import PortfolioBuilder from "./pages/PortfolioBuilder.tsx";
+import InterviewPrep from "./pages/InterviewPrep.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();

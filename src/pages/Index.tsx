@@ -443,6 +443,7 @@ const Index = () => {
       <Hero onNavigate={navigate} />
       <Features />
       <RedesignCTA onNavigate={navigate} />
+      <JobSearchShowcase onNavigate={navigate} />
       <HowItWorks />
       <Pricing onNavigate={navigate} />
       <Testimonials />

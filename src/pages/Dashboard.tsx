@@ -1,10 +1,45 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/components/DashboardLayout";
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const { data: cvCount = 0 } = useQuery({
+    queryKey: ["cv-count", user?.id],
+    queryFn: async () => {
+      const { count } = await supabase.from("saved_cvs").select("*", { count: "exact", head: true });
+      return count ?? 0;
+    },
+    enabled: !!user,
+  });
+
+  const { data: portfolioCount = 0 } = useQuery({
+    queryKey: ["portfolio-count", user?.id],
+    queryFn: async () => {
+      const { count } = await supabase.from("portfolios").select("*", { count: "exact", head: true });
+      return count ?? 0;
+    },
+    enabled: !!user,
+  });
+
+  const { data: jobCount = 0 } = useQuery({
+    queryKey: ["job-count", user?.id],
+    queryFn: async () => {
+      const { count } = await supabase.from("job_applications").select("*", { count: "exact", head: true });
+      return count ?? 0;
+    },
+    enabled: !!user,
+  });
+
+  const cards = [
+    { title: "My CVs", desc: "Build and manage your ATS-optimized CVs", count: cvCount, url: "/my-cvs" },
+    { title: "Portfolios", desc: "Showcase your work with stunning portfolios", count: portfolioCount, url: "/portfolios" },
+    { title: "Job Tracker", desc: "Track applications and interview status", count: jobCount, url: "/job-tracker" },
+  ];
 
   return (
     <DashboardLayout>
@@ -17,11 +52,7 @@ const Dashboard = () => {
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
-          {[
-            { title: "My CVs", desc: "Build and manage your ATS-optimized CVs", count: "0", url: "/my-cvs" },
-            { title: "ATS Checker", desc: "Audit your CV against job descriptions", count: "—", url: "/ats-checker" },
-            { title: "Job Tracker", desc: "Track applications and interview status", count: "—", url: "#" },
-          ].map((card) => (
+          {cards.map((card) => (
             <div
               key={card.title}
               onClick={() => navigate(card.url)}

@@ -42,7 +42,15 @@ const CVBuilder = () => {
         toast.error("Could not load CV");
         setCvData(sampleCVData);
       } else {
-        setCvData(data.cv_data as unknown as CVData);
+        const raw = data.cv_data as Record<string, unknown> ?? {};
+        const merged: CVData = {
+          personal: { ...emptyCVData.personal, ...(raw.personal as Record<string, unknown> ?? {}) } as CVData["personal"],
+          summary: (raw.summary as string) ?? emptyCVData.summary,
+          experience: (raw.experience as CVData["experience"]) ?? emptyCVData.experience,
+          education: (raw.education as CVData["education"]) ?? emptyCVData.education,
+          skills: (raw.skills as CVData["skills"]) ?? emptyCVData.skills,
+        };
+        setCvData(merged);
         setTemplate((data.template || "classic") as CVTemplateId);
         setCvName(data.name);
       }

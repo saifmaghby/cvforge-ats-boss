@@ -93,7 +93,7 @@ const ArabicCVBuilder = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <ForgeButton variant="outline" size="sm" onClick={handleExport} disabled={exporting}>
+          <ForgeButton variant="outline" onClick={handleExport} disabled={exporting}>
             <Download className="w-3.5 h-3.5 ml-1" />
             {exporting ? "جارٍ التصدير..." : "تصدير PDF"}
           </ForgeButton>

@@ -157,6 +157,14 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/mock-interview"
+              element={
+                <ProtectedRoute>
+                  <MockInterview />
+                </ProtectedRoute>
+              }
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

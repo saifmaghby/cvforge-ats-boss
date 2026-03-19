@@ -5,6 +5,7 @@ export interface PersonalInfo {
   phone: string;
   location: string;
   linkedin: string;
+  photoUrl?: string;
 }
 
 export interface Experience {

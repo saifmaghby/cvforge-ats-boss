@@ -3,6 +3,7 @@ import { PortfolioData, PortfolioProject } from "@/types/portfolio";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import ForgeButton from "@/components/ForgeButton";
+import ImageUpload from "@/components/ImageUpload";
 import { Plus, Trash2, ChevronDown, ChevronRight } from "lucide-react";
 
 interface Props {
@@ -102,11 +103,12 @@ const PortfolioFormPanel = ({ data, onChange }: Props) => {
           className="font-mono text-sm resize-none"
           rows={2}
         />
-        <Input
-          placeholder="Avatar URL (optional)"
+        <ImageUpload
           value={data.hero.avatarUrl}
-          onChange={(e) => updateHero("avatarUrl", e.target.value)}
-          className="font-mono text-sm"
+          onChange={(url) => updateHero("avatarUrl", url)}
+          folder="portfolio-avatars"
+          label="Upload Avatar"
+          aspect="square"
         />
       </Section>
 
@@ -134,6 +136,13 @@ const PortfolioFormPanel = ({ data, onChange }: Props) => {
                 <Trash2 className="h-3.5 w-3.5" />
               </button>
             </div>
+            <ImageUpload
+              value={project.imageUrl}
+              onChange={(url) => updateProject(project.id, "imageUrl", url)}
+              folder="portfolio-projects"
+              label="Project Screenshot"
+              aspect="video"
+            />
             <Input
               placeholder="Project Title"
               value={project.title}

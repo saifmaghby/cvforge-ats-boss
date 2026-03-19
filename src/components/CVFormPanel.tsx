@@ -1,5 +1,6 @@
 import { CVData, Experience, Education } from "@/types/cv";
 import { Plus, Trash2, GripVertical } from "lucide-react";
+import ImageUpload from "@/components/ImageUpload";
 
 interface Props {
   data: CVData;
@@ -76,13 +77,25 @@ const CVFormPanel = ({ data, onChange }: Props) => {
       <section>
         {sectionHeader("Personal Info", "Section 01")}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-          <div>
-            <label className={labelClass}>Full Name</label>
-            <input className={inputClass} value={data.personal.fullName} onChange={(e) => updatePersonal("fullName", e.target.value)} placeholder="Ahmed Hassan" />
-          </div>
-          <div>
-            <label className={labelClass}>Job Title</label>
-            <input className={inputClass} value={data.personal.title} onChange={(e) => updatePersonal("title", e.target.value)} placeholder="Senior Software Engineer" />
+          <div className="md:col-span-2 flex items-start gap-4">
+            <ImageUpload
+              value={data.personal.photoUrl || ""}
+              onChange={(url) => updatePersonal("photoUrl", url)}
+              folder="cv-photos"
+              label="Photo"
+              aspect="square"
+              className="w-24 shrink-0"
+            />
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+              <div>
+                <label className={labelClass}>Full Name</label>
+                <input className={inputClass} value={data.personal.fullName} onChange={(e) => updatePersonal("fullName", e.target.value)} placeholder="Ahmed Hassan" />
+              </div>
+              <div>
+                <label className={labelClass}>Job Title</label>
+                <input className={inputClass} value={data.personal.title} onChange={(e) => updatePersonal("title", e.target.value)} placeholder="Senior Software Engineer" />
+              </div>
+            </div>
           </div>
           <div>
             <label className={labelClass}>Email</label>

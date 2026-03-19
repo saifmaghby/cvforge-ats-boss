@@ -20,6 +20,7 @@ import InterviewPrep from "./pages/InterviewPrep.tsx";
 import LinkedInOptimizer from "./pages/LinkedInOptimizer.tsx";
 import JobMatch from "./pages/JobMatch.tsx";
 import FollowUpEmail from "./pages/FollowUpEmail.tsx";
+import JobSearch from "./pages/JobSearch.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();

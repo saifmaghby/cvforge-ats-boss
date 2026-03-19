@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import LiveCVPreview from "@/components/LiveCVPreview";
 import ATSScoreGauge from "@/components/ATSScoreGauge";
 import ForgeButton from "@/components/ForgeButton";
-import { Shield, Zap, Target, Check, ArrowRight, Sparkles } from "lucide-react";
+import { Shield, Zap, Target, Check, ArrowRight, Sparkles, Search, ExternalLink } from "lucide-react";
 
 const entrance = {
   initial: { opacity: 0, y: 10 },
@@ -173,6 +173,69 @@ const RedesignCTA = ({ onNavigate }: { onNavigate: (path: string) => void }) => 
               <p className="font-display font-bold uppercase text-sm">Pick a Template & Export</p>
               <p className="text-xs font-mono text-muted-foreground">ATS-optimized, ready for Wuzzuf, Bayt & LinkedIn</p>
             </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  </section>
+);
+
+const jobBoards = [
+  { name: "Wuzzuf", emoji: "🇪🇬", desc: "Egypt's #1 job board" },
+  { name: "LinkedIn Jobs", emoji: "💼", desc: "Global professional network" },
+  { name: "Bayt.com", emoji: "🌍", desc: "MENA's largest job site" },
+];
+
+const JobSearchShowcase = ({ onNavigate }: { onNavigate: (path: string) => void }) => (
+  <section className="border-b border-border bg-secondary/30">
+    <div className="container mx-auto px-4 py-24">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <motion.div {...entrance} className="space-y-6">
+          <p className="text-xs font-mono uppercase tracking-[0.2em] text-primary">
+            Smart Job Search
+          </p>
+          <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tighter uppercase leading-[0.95]">
+            Your CV Finds
+            <br />
+            The Jobs
+            <br />
+            <span className="text-primary">For You.</span>
+          </h2>
+          <p className="text-sm font-mono text-muted-foreground leading-relaxed max-w-md">
+            AI reads your CV and generates optimized search queries for Wuzzuf, LinkedIn, and Bayt. One click opens targeted job listings matched to your exact skills and experience. No API key needed.
+          </p>
+          <div className="flex gap-4 pt-2">
+            <ForgeButton size="lg" onClick={() => onNavigate("/job-search")}>
+              <Search className="h-4 w-4 mr-2" />
+              Find Jobs From My CV
+            </ForgeButton>
+          </div>
+        </motion.div>
+
+        <motion.div {...entrance} className="space-y-4">
+          {jobBoards.map((board, i) => (
+            <motion.div
+              key={board.name}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.1 }}
+              className="border border-border p-5 flex items-center gap-4 hover:border-primary/40 hover:bg-secondary transition-colors group"
+            >
+              <span className="text-2xl">{board.emoji}</span>
+              <div className="flex-1">
+                <p className="font-display font-bold uppercase text-sm">{board.name}</p>
+                <p className="text-xs font-mono text-muted-foreground">{board.desc}</p>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground group-hover:text-primary transition-colors">
+                <span className="hidden sm:inline">AI-generated links</span>
+                <ExternalLink className="h-4 w-4" />
+              </div>
+            </motion.div>
+          ))}
+          <div className="border border-dashed border-border p-4 text-center">
+            <p className="text-xs font-mono text-muted-foreground">
+              + Personalized search tips & recommended job titles
+            </p>
           </div>
         </motion.div>
       </div>
@@ -443,6 +506,7 @@ const Index = () => {
       <Hero onNavigate={navigate} />
       <Features />
       <RedesignCTA onNavigate={navigate} />
+      <JobSearchShowcase onNavigate={navigate} />
       <HowItWorks />
       <Pricing onNavigate={navigate} />
       <Testimonials />

@@ -142,14 +142,17 @@ const MyCVs = () => {
               My CVs
             </h1>
           </div>
-          <ForgeButton
-            variant="primary"
-            onClick={() => createMutation.mutate()}
-            disabled={createMutation.isPending}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            New CV
-          </ForgeButton>
+          <div className="flex items-center gap-3">
+            <RedesignCVUpload compact />
+            <ForgeButton
+              variant="primary"
+              onClick={() => createMutation.mutate()}
+              disabled={createMutation.isPending}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              New CV
+            </ForgeButton>
+          </div>
         </div>
 
         {isLoading ? (

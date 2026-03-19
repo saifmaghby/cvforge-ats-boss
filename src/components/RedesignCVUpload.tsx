@@ -2,13 +2,12 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { normalizeCVData, emptyCVData } from "@/types/cv";
+import { normalizeCVData } from "@/types/cv";
 import ForgeButton from "@/components/ForgeButton";
 import { Upload, FileText, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 interface RedesignCVUploadProps {
-  /** Compact mode for embedding in cards/sections */
   compact?: boolean;
 }
 
@@ -33,29 +32,33 @@ const RedesignCVUpload = ({ compact = false }: RedesignCVUploadProps) => {
     setFile(selected);
   };
 
+  const fileToBase64 = async (f: File): Promise<string> => {
+    const buffer = await f.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  };
+
   const handleRedesign = async () => {
     if (!file || !user) return;
     setProcessing(true);
 
     try {
-      // Convert to base64
-      const buffer = await file.arrayBuffer();
-      const bytes = new Uint8Array(buffer);
-      let binary = "";
-      for (let i = 0; i < bytes.length; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-      const cvBase64 = btoa(binary);
+      const cvBase64 = await fileToBase64(file);
 
-      // Call extract-cv edge function
-      const { data, error } = await supabase.functions.invoke("extract-cv", {
-        body: { cvBase64 },
-      });
+      // Run extract + ATS audit in parallel
+      const [extractRes, auditRes] = await Promise.all([
+        supabase.functions.invoke("extract-cv", { body: { cvBase64 } }),
+        supabase.functions.invoke("ats-audit", { body: { cvBase64 } }),
+      ]);
 
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
+      if (extractRes.error) throw extractRes.error;
+      if (extractRes.data?.error) throw new Error(extractRes.data.error);
 
-      const cvData = normalizeCVData(data);
+      const cvData = normalizeCVData(extractRes.data);
 
       // Save as new CV
       const { data: savedCV, error: saveError } = await supabase
@@ -72,6 +75,15 @@ const RedesignCVUpload = ({ compact = false }: RedesignCVUploadProps) => {
 
       if (saveError) throw saveError;
 
+      // Store audit data in sessionStorage for the builder to pick up
+      const auditData = !auditRes.error && auditRes.data && !auditRes.data.error
+        ? auditRes.data
+        : null;
+
+      if (auditData) {
+        sessionStorage.setItem(`ats-audit-${savedCV.id}`, JSON.stringify(auditData));
+      }
+
       toast.success("CV extracted and redesigned! Choose a template.");
       navigate(`/builder?cv=${savedCV.id}`);
     } catch (err) {
@@ -82,16 +94,53 @@ const RedesignCVUpload = ({ compact = false }: RedesignCVUploadProps) => {
     }
   };
 
+  const fileSelectedUI = (
+    <div className="space-y-2">
+      <div className={`flex items-center gap-2 text-sm font-mono text-muted-foreground ${compact ? "" : "justify-center"}`}>
+        <FileText className="h-4 w-4" />
+        <span className={`truncate ${compact ? "" : "max-w-[200px]"}`}>{file?.name}</span>
+        <button
+          onClick={() => { setFile(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
+          className={`text-xs text-muted-foreground hover:text-foreground ${compact ? "ml-auto" : "underline"}`}
+        >
+          Change
+        </button>
+      </div>
+      <ForgeButton
+        variant="primary"
+        onClick={handleRedesign}
+        disabled={processing}
+        className={compact ? "w-full justify-center" : ""}
+      >
+        {processing ? (
+          <>
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            Extracting & Scoring…
+          </>
+        ) : (
+          <>
+            <Sparkles className="h-4 w-4 mr-2" />
+            Redesign My CV
+          </>
+        )}
+      </ForgeButton>
+    </div>
+  );
+
+  const hiddenInput = (
+    <input
+      ref={fileInputRef}
+      type="file"
+      accept=".pdf"
+      onChange={handleFileChange}
+      className="hidden"
+    />
+  );
+
   if (compact) {
     return (
       <div className="space-y-3">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".pdf"
-          onChange={handleFileChange}
-          className="hidden"
-        />
+        {hiddenInput}
         {!file ? (
           <ForgeButton
             variant="outline"
@@ -102,51 +151,14 @@ const RedesignCVUpload = ({ compact = false }: RedesignCVUploadProps) => {
             <Upload className="h-4 w-4 mr-2" />
             Upload Old CV (PDF)
           </ForgeButton>
-        ) : (
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm font-mono text-muted-foreground">
-              <FileText className="h-4 w-4" />
-              <span className="truncate">{file.name}</span>
-              <button
-                onClick={() => { setFile(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
-                className="text-xs text-muted-foreground hover:text-foreground ml-auto"
-              >
-                Change
-              </button>
-            </div>
-            <ForgeButton
-              variant="primary"
-              onClick={handleRedesign}
-              disabled={processing}
-              className="w-full justify-center"
-            >
-              {processing ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Extracting & Redesigning…
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Redesign My CV
-                </>
-              )}
-            </ForgeButton>
-          </div>
-        )}
+        ) : fileSelectedUI}
       </div>
     );
   }
 
   return (
     <div className="border border-dashed border-border p-8 text-center space-y-4">
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".pdf"
-        onChange={handleFileChange}
-        className="hidden"
-      />
+      {hiddenInput}
       <div className="flex justify-center">
         <div className="w-12 h-12 border border-primary/30 flex items-center justify-center">
           <Sparkles className="w-6 h-6 text-primary" />
@@ -157,7 +169,7 @@ const RedesignCVUpload = ({ compact = false }: RedesignCVUploadProps) => {
           Redesign Your CV
         </h3>
         <p className="text-sm font-mono text-muted-foreground mt-1">
-          Upload your old CV (PDF) and we'll extract your data, optimize it for ATS, and redesign it with a modern template.
+          Upload your old CV (PDF) and we'll extract your data, score it for ATS readiness, and redesign it with a modern template.
         </p>
       </div>
       {!file ? (
@@ -169,37 +181,7 @@ const RedesignCVUpload = ({ compact = false }: RedesignCVUploadProps) => {
           <Upload className="h-4 w-4 mr-2" />
           Choose PDF File
         </ForgeButton>
-      ) : (
-        <div className="space-y-3">
-          <div className="flex items-center justify-center gap-2 text-sm font-mono text-muted-foreground">
-            <FileText className="h-4 w-4" />
-            <span className="truncate max-w-[200px]">{file.name}</span>
-            <button
-              onClick={() => { setFile(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
-              className="text-xs text-muted-foreground hover:text-foreground underline"
-            >
-              Change
-            </button>
-          </div>
-          <ForgeButton
-            variant="primary"
-            onClick={handleRedesign}
-            disabled={processing}
-          >
-            {processing ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Extracting & Redesigning…
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-4 w-4 mr-2" />
-                Redesign My CV
-              </>
-            )}
-          </ForgeButton>
-        </div>
-      )}
+      ) : fileSelectedUI}
     </div>
   );
 };

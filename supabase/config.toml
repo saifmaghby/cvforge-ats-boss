@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.extract-cv]
 verify_jwt = false
+
+[functions.ats-audit]
+verify_jwt = false

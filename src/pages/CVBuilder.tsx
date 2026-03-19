@@ -7,6 +7,7 @@ import CVPreviewPanel from "@/components/CVPreviewPanel";
 import ForgeButton from "@/components/ForgeButton";
 import TailorCVDialog from "@/components/TailorCVDialog";
 import DashboardLayout from "@/components/DashboardLayout";
+import ATSAuditBanner, { ATSAuditData } from "@/components/ATSAuditBanner";
 import { CVData, sampleCVData, emptyCVData, normalizeCVData } from "@/types/cv";
 import { CVTemplateId, cvTemplates } from "@/components/cv-templates";
 import { toast } from "sonner";
@@ -23,19 +24,31 @@ const CVBuilder = () => {
   const [saving, setSaving] = useState(false);
   const [cvName, setCvName] = useState("Untitled CV");
   const [loaded, setLoaded] = useState(false);
+  const [atsAudit, setAtsAudit] = useState<ATSAuditData | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
   const handleDataChange = useCallback((nextData: CVData) => {
     setCvData(normalizeCVData(nextData));
   }, []);
 
-  // Load CV from cloud if cvId is present
+  // Load CV + check for ATS audit data
   useEffect(() => {
     if (!cvId || !user) {
       if (!cvId) setCvData(sampleCVData);
       setLoaded(true);
       return;
     }
+
+    // Check sessionStorage for audit data from redesign flow
+    const auditKey = `ats-audit-${cvId}`;
+    const storedAudit = sessionStorage.getItem(auditKey);
+    if (storedAudit) {
+      try {
+        setAtsAudit(JSON.parse(storedAudit));
+      } catch { /* ignore */ }
+      sessionStorage.removeItem(auditKey);
+    }
+
     const load = async () => {
       const { data, error } = await supabase
         .from("saved_cvs")
@@ -120,6 +133,11 @@ const CVBuilder = () => {
 
   return (
     <DashboardLayout>
+      {/* ATS Audit Banner (shown after redesign) */}
+      {atsAudit && (
+        <ATSAuditBanner audit={atsAudit} onDismiss={() => setAtsAudit(null)} />
+      )}
+
       {/* Builder toolbar */}
       <div className="border-b border-border px-4 h-12 flex items-center justify-between bg-background">
         <div className="flex items-center gap-3">

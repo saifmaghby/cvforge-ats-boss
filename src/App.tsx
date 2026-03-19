@@ -21,6 +21,7 @@ import LinkedInOptimizer from "./pages/LinkedInOptimizer.tsx";
 import JobMatch from "./pages/JobMatch.tsx";
 import FollowUpEmail from "./pages/FollowUpEmail.tsx";
 import JobSearch from "./pages/JobSearch.tsx";
+import ArabicCVBuilder from "./pages/ArabicCVBuilder.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();

@@ -114,6 +114,30 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/linkedin-optimizer"
+              element={
+                <ProtectedRoute>
+                  <LinkedInOptimizer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/job-match"
+              element={
+                <ProtectedRoute>
+                  <JobMatch />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/follow-up-email"
+              element={
+                <ProtectedRoute>
+                  <FollowUpEmail />
+                </ProtectedRoute>
+              }
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

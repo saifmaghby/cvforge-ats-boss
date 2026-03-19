@@ -36,6 +36,7 @@ const navItems = [
   { title: "CV Builder", url: "/builder", icon: PenTool },
   { title: "ATS Checker", url: "/ats-checker", icon: ScanSearch },
   { title: "Job Match", url: "/job-match", icon: Crosshair },
+  { title: "Job Search", url: "/job-search", icon: Search },
   { title: "Job Tracker", url: "/job-tracker", icon: Target },
   { title: "Cover Letter", url: "/cover-letter", icon: Mail },
   { title: "Follow-Up Email", url: "/follow-up-email", icon: Send },

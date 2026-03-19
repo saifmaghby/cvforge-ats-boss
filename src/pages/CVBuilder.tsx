@@ -134,13 +134,13 @@ const CVBuilder = () => {
           />
         </div>
         <div className="flex items-center gap-3">
-          <ForgeButton variant="ghost" onClick={() => setCvData(emptyCVData)}>
+          <ForgeButton variant="ghost" onClick={() => handleDataChange(emptyCVData)}>
             Clear
           </ForgeButton>
-          <ForgeButton variant="ghost" onClick={() => setCvData(sampleCVData)}>
+          <ForgeButton variant="ghost" onClick={() => handleDataChange(sampleCVData)}>
             Load Sample
           </ForgeButton>
-          <TailorCVDialog data={cvData} onChange={setCvData} />
+          <TailorCVDialog data={cvData} onChange={handleDataChange} />
           <ForgeButton variant="ghost" onClick={handleSave} disabled={saving}>
             <Save className="h-4 w-4 mr-1" />
             {saving ? "Saving…" : "Save"}

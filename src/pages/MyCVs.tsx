@@ -63,7 +63,7 @@ const MyCVs = () => {
     mutationFn: async () => {
       const { data, error } = await supabase
         .from("saved_cvs")
-        .insert({ user_id: user!.id, name: "Untitled CV", cv_data: emptyCVData })
+        .insert([{ user_id: user!.id, name: "Untitled CV", cv_data: emptyCVData }])
         .select()
         .single();
       if (error) throw error;

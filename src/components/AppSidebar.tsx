@@ -13,6 +13,7 @@ import {
   Crosshair,
   Send,
   Search,
+  Languages,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -35,6 +36,7 @@ const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: FileText },
   { title: "My CVs", url: "/my-cvs", icon: FolderOpen },
   { title: "CV Builder", url: "/builder", icon: PenTool },
+  { title: "Arabic CV", url: "/arabic-cv", icon: Languages },
   { title: "ATS Checker", url: "/ats-checker", icon: ScanSearch },
   { title: "Job Match", url: "/job-match", icon: Crosshair },
   { title: "Job Search", url: "/job-search", icon: Search },

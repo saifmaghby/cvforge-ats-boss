@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import LiveCVPreview from "@/components/LiveCVPreview";
 import ATSScoreGauge from "@/components/ATSScoreGauge";
 import ForgeButton from "@/components/ForgeButton";
-import { Shield, Zap, Target, Check, ArrowRight, Sparkles } from "lucide-react";
+import { Shield, Zap, Target, Check, ArrowRight, Sparkles, Search, ExternalLink } from "lucide-react";
 
 const entrance = {
   initial: { opacity: 0, y: 10 },

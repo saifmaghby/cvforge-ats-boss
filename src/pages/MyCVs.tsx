@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import DashboardLayout from "@/components/DashboardLayout";
 import ForgeButton from "@/components/ForgeButton";
+import RedesignCVUpload from "@/components/RedesignCVUpload";
 import { Input } from "@/components/ui/input";
 import {
   Table,

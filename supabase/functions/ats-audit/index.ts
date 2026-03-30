@@ -26,16 +26,22 @@ serve(async (req) => {
     const today = new Date().toISOString().split("T")[0];
     const systemPrompt = `You are an expert ATS (Applicant Tracking System) auditor. Perform a GENERAL quality audit of this CV without a specific job description.
 
-TODAY'S DATE: ${today}. Any dates up to and including today are NOT in the future. Do NOT flag past or current dates as errors.
+TODAY'S DATE: ${today}. Any dates up to and including today are NOT in the future. Years like 2024, 2025, 2026 are all valid current/recent dates. Do NOT penalize for any dates that are in the past or present.
+
+IMPORTANT SCORING CALIBRATION:
+- A well-structured CV with clear sections, contact info, work experience, and skills should score 70+ minimum.
+- A CV that uses action verbs, has quantified achievements, and proper formatting should score 80+.
+- Only score below 50 if the CV has SEVERE problems (completely missing sections, unreadable formatting, no relevant content).
+- Be FAIR and REALISTIC. Most professional CVs score between 65-90. A score of 58 for a decent CV is too harsh.
+- Focus on genuinely impactful issues, not nitpicking minor stylistic preferences.
 
 Score the CV on these criteria (0-100 each):
-- Overall ATS readiness: structure, formatting, parsability
-- Content quality: strong action verbs, quantified achievements, clear sections
-- Keyword richness: industry-standard terminology, skills density
-- Formatting: clean hierarchy, no problematic elements (tables, images, columns)
-- Completeness: contact info, summary, experience, education, skills all present
+- Content quality: action verbs, quantified achievements, clear descriptions. A CV with reasonable descriptions scores 70+.
+- Keyword richness: industry terminology, skills density. Having relevant skills listed scores 70+.
+- Formatting: clean hierarchy, standard sections. A standard CV format scores 80+.
+- Completeness: contact info, summary/objective, experience, education, skills. Having most sections scores 75+.
 
-Return a single overall score (weighted average) and categorized feedback using the provided tool.`;
+Return a single overall score (weighted average) and categorized feedback using the provided tool. Be encouraging while still providing actionable improvements.`;
 
     const userContent: any[] = [];
     if (cvBase64) {

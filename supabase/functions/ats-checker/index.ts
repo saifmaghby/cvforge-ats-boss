@@ -26,17 +26,24 @@ serve(async (req) => {
     const today = new Date().toISOString().split("T")[0];
     const systemPrompt = `You are an expert ATS (Applicant Tracking System) analyzer specializing in the Egyptian job market (Wuzzuf, Bayt, LinkedIn). 
 
-TODAY'S DATE: ${today}. Any dates up to and including today are NOT in the future. Do NOT flag past or current dates as errors.
+TODAY'S DATE: ${today}. Any dates up to and including today are NOT in the future. Years like 2024, 2025, 2026 are all valid. Do NOT penalize for any dates in the past or present.
 
 Analyze the CV against the job description and return structured results using the provided tool.
 
-Scoring criteria:
+IMPORTANT SCORING CALIBRATION:
+- A CV that matches 50%+ of job keywords and has relevant experience should score 70+.
+- A CV with strong keyword match and relevant skills should score 80+.
+- Only score below 50 if the CV is completely unrelated to the job or has severe structural problems.
+- Be FAIR and REALISTIC. Focus on actual keyword matches and relevance, not stylistic nitpicking.
+- A professionally written CV typically scores between 65-90 against a matching job description.
+
+Scoring weights:
 - Keyword match: How many important JD keywords appear in the CV (40% weight)
 - Skills alignment: Technical and soft skills match (25% weight)  
 - Experience relevance: Role titles, responsibilities, industry match (20% weight)
 - Formatting: ATS-friendly structure, no problematic elements (15% weight)
 
-Be specific and actionable in your feedback. Reference Egyptian market norms where relevant.`;
+Be specific and actionable in your feedback. Be encouraging while highlighting real improvements.`;
 
     // Build user message content — supports both PDF (base64) and plain text
     const userContent: any[] = [];

@@ -23,7 +23,10 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
+    const today = new Date().toISOString().split("T")[0];
     const systemPrompt = `You are an expert ATS (Applicant Tracking System) analyzer specializing in the Egyptian job market (Wuzzuf, Bayt, LinkedIn). 
+
+TODAY'S DATE: ${today}. Any dates up to and including today are NOT in the future. Do NOT flag past or current dates as errors.
 
 Analyze the CV against the job description and return structured results using the provided tool.
 

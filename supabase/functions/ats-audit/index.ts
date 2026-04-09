@@ -6,6 +6,13 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+function respond(ok: boolean, payload: Record<string, unknown>): Response {
+  return new Response(JSON.stringify({ ok, ...payload }), {
+    status: 200,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS")
     return new Response(null, { headers: corsHeaders });
@@ -14,10 +21,7 @@ serve(async (req) => {
     const { cvBase64, cvText } = await req.json();
 
     if (!cvBase64 && !cvText) {
-      return new Response(
-        JSON.stringify({ error: "A CV (PDF or text) is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return respond(false, { error: "A CV (PDF or text) is required" });
     }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
@@ -102,24 +106,18 @@ Return a single overall score (weighted average) and categorized feedback using 
     });
 
     if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "AI credits exhausted." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
       const t = await response.text();
       console.error("AI gateway error:", response.status, t);
-      return new Response(
-        JSON.stringify({ error: "AI audit failed" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      if (response.status === 429) {
+        return respond(false, { error: "Rate limit exceeded. Please try again in a moment." });
+      }
+      if (response.status === 402) {
+        return respond(false, { error: "AI credits exhausted. Please try again later." });
+      }
+      if (response.status === 502 || response.status === 503) {
+        return respond(false, { error: "AI service is temporarily unavailable. Please try again in 30 seconds." });
+      }
+      return respond(false, { error: "AI audit failed. Please try again." });
     }
 
     const result = await response.json();
@@ -127,21 +125,13 @@ Return a single overall score (weighted average) and categorized feedback using 
 
     if (!toolCall?.function?.arguments) {
       console.error("No tool call in response:", JSON.stringify(result));
-      return new Response(
-        JSON.stringify({ error: "AI did not return structured audit" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return respond(false, { error: "AI did not return structured audit" });
     }
 
     const audit = JSON.parse(toolCall.function.arguments);
-    return new Response(JSON.stringify(audit), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return respond(true, { data: audit });
   } catch (e) {
     console.error("ats-audit error:", e);
-    return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return respond(false, { error: e instanceof Error ? e.message : "Unknown error" });
   }
 });

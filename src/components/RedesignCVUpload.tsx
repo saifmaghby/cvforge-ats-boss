@@ -76,8 +76,9 @@ const RedesignCVUpload = ({ compact = false }: RedesignCVUploadProps) => {
       if (saveError) throw saveError;
 
       // Store audit data in sessionStorage for the builder to pick up
-      const auditData = !auditRes.error && auditRes.data && !auditRes.data.error
-        ? auditRes.data
+      const rawAudit = auditRes.data?.ok ? auditRes.data.data : auditRes.data;
+      const auditData = !auditRes.error && rawAudit && !rawAudit?.error
+        ? rawAudit
         : null;
 
       if (auditData) {

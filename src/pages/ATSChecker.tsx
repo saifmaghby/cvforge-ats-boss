@@ -123,15 +123,15 @@ const ATSChecker = () => {
           body: { cvBase64 },
         });
         if (error) throw error;
-        if (data?.error) { toast.error(data.error); return; }
-        setQuickResult(data as QuickResult);
+        if (data && !data.ok) { toast.error(data.error || "Audit failed"); return; }
+        setQuickResult((data?.data ?? data) as QuickResult);
       } else {
         const { data, error } = await supabase.functions.invoke("ats-checker", {
           body: { cvBase64, jobDescription },
         });
         if (error) throw error;
-        if (data?.error) { toast.error(data.error); return; }
-        setTargetedResult(data as TargetedResult);
+        if (data && !data.ok) { toast.error(data.error || "Analysis failed"); return; }
+        setTargetedResult((data?.data ?? data) as TargetedResult);
       }
     } catch (e: any) {
       toast.error(e.message || "Something went wrong");
